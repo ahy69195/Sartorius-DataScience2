@@ -17,14 +17,13 @@ from dataset import DirDataset
 
 
 class Unet(pl.LightningModule):
-    def __init__(self, dataset,n_channels,n_classes):
+    def __init__(self, dataset, n_channels, n_classes):
         super(Unet, self).__init__()
 
         self.n_channels = n_channels
         self.n_classes = n_classes
         self.dataset = dataset
         self.bilinear = True
-
 
         def double_conv(in_channels, out_channels):
             return nn.Sequential(
@@ -121,9 +120,9 @@ class Unet(pl.LightningModule):
         n_train = len(dataset) - n_val
         train_ds, val_ds = random_split(dataset, [n_train, n_val])
         train_loader = DataLoader(
-            train_ds, batch_size=1, pin_memory=True, shuffle=True)
+            train_ds, batch_size=1, pin_memory=True, shuffle=True, num_workers=4)
         val_loader = DataLoader(val_ds, batch_size=1,
-                                pin_memory=True, shuffle=False)
+                                pin_memory=True, shuffle=False, num_workers=4)
 
         return {
             'train': train_loader,

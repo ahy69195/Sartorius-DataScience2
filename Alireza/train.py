@@ -32,7 +32,8 @@ def main(dataset, n_classes, n_channels, log_dir="lightning_logs"):
     )
     trainer = Trainer(
         gpus=1,
-        callbacks=[checkpoint_callback, stop_callback]
+        callbacks=[checkpoint_callback, stop_callback],
+        max_epochs=3
         # checkpoint_callback=checkpoint_callback,
         # early_stop_callback=stop_callback,
     )
