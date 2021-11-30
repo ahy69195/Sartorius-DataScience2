@@ -6,15 +6,18 @@ from PIL import Image
 import numpy as np
 import torch
 from torch.utils.data import Dataset
+import pandas as pd
 
 
 class DirDataset(Dataset):
-    def __init__(self, img_dir, mask_dir, scale=1):
+    def __init__(self, img_dir, mask_dir, csv_file, scale=1):
         self.img_dir = img_dir
         self.mask_dir = mask_dir
         self.scale = scale
+        self.csv_file = csv_file
 
         try:
+            for root, 
             self.ids = [s.split('.')[0] for s in os.listdir(self.img_dir)]
         except FileNotFoundError:
             self.ids = []
@@ -31,7 +34,7 @@ class DirDataset(Dataset):
 
         _img = img.resize((_w, _h))
         _img = np.array(_img)
-        if len(_img.shape) == 2:  ## gray/mask images
+        if len(_img.shape) == 2:  # gray/mask images
             _img = np.expand_dims(_img, axis=-1)
 
         # hwc to chw

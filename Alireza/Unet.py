@@ -30,7 +30,8 @@ class Unet(pl.LightningModule):
                 nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
                 nn.BatchNorm2d(out_channels),
                 nn.ReLU(inplace=True),
-                nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1),
+                nn.Conv2d(out_channels, out_channels,
+                          kernel_size=3, padding=1),
                 nn.BatchNorm2d(out_channels),
                 nn.ReLU(inplace=True),
             )
@@ -46,7 +47,8 @@ class Unet(pl.LightningModule):
                 super().__init__()
 
                 if bilinear:
-                    self.up = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+                    self.up = nn.Upsample(
+                        scale_factor=2, mode='bilinear', align_corners=True)
                 else:
                     self.up = nn.ConvTranpose2d(in_channels // 2, in_channels // 2,
                                                 kernel_size=2, stride=2)
@@ -61,7 +63,7 @@ class Unet(pl.LightningModule):
 
                 x1 = F.pad(x1, [diffX // 2, diffX - diffX // 2,
                                 diffY // 2, diffY - diffY // 2])
-                x = torch.cat([x2, x1], dim=1) ## why 1?
+                x = torch.cat([x2, x1], dim=1)  # why 1?
                 return self.conv(x)
 
         self.inc = double_conv(self.n_channels, 64)
@@ -112,12 +114,15 @@ class Unet(pl.LightningModule):
 
     def __dataloader(self):
         dataset = self.hparams.dataset
-        dataset = DirDataset(f'./dataset/{dataset}/train', f'./dataset/{dataset}/train_masks')
+        dataset = DirDataset(
+            f'./dataset/{dataset}/train', f'./dataset/{dataset}/train_masks', './train.csv')
         n_val = int(len(dataset) * 0.1)
         n_train = len(dataset) - n_val
         train_ds, val_ds = random_split(dataset, [n_train, n_val])
-        train_loader = DataLoader(train_ds, batch_size=1, pin_memory=True, shuffle=True)
-        val_loader = DataLoader(val_ds, batch_size=1, pin_memory=True, shuffle=False)
+        train_loader = DataLoader(
+            train_ds, batch_size=1, pin_memory=True, shuffle=True)
+        val_loader = DataLoader(val_ds, batch_size=1,
+                                pin_memory=True, shuffle=False)
 
         return {
             'train': train_loader,
