@@ -17,13 +17,14 @@ from dataset import DirDataset
 
 
 class Unet(pl.LightningModule):
-    def __init__(self, hparams):
+    def __init__(self, dataset,n_channels,n_classes):
         super(Unet, self).__init__()
-        self.hparams = hparams
 
-        self.n_channels = hparams.n_channels
-        self.n_classes = hparams.n_classes
+        self.n_channels = n_channels
+        self.n_classes = n_classes
+        self.dataset = dataset
         self.bilinear = True
+
 
         def double_conv(in_channels, out_channels):
             return nn.Sequential(
@@ -113,7 +114,7 @@ class Unet(pl.LightningModule):
         return torch.optim.RMSprop(self.parameters(), lr=0.1, weight_decay=1e-8)
 
     def __dataloader(self):
-        dataset = self.hparams.dataset
+        dataset = self.dataset
         dataset = DirDataset(
             f'./dataset/{dataset}/train', f'./dataset/{dataset}/train_masks', './train.csv')
         n_val = int(len(dataset) * 0.1)
@@ -129,11 +130,11 @@ class Unet(pl.LightningModule):
             'val': val_loader,
         }
 
-    @pl.data_loader
+    # @pl.data_loader
     def train_dataloader(self):
         return self.__dataloader()['train']
 
-    @pl.data_loader
+    # @pl.data_loader
     def val_dataloader(self):
         return self.__dataloader()['val']
 

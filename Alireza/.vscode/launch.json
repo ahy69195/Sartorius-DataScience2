@@ -9,8 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "train.py",
-            "console": "integratedTerminal",
-            "args": ["--dataset" ,"dataset"]
+            "console": "integratedTerminal"
         }
     ]
 }

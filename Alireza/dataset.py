@@ -45,8 +45,8 @@ class DirDataset(Dataset):
 
     def __getitem__(self, i):
         idx = self.ids[i]
-        img_files = glob.glob(os.path.join(self.img_dir, idx+'.*'))
-        mask_files = glob.glob(os.path.join(self.mask_dir, idx+'_mask.*'))
+        mask_files = glob.glob(os.path.join(self.mask_dir, idx+'.*'))
+        img_files = glob.glob(os.path.join(self.img_dir, idx.split('_')[0]+'.*'))
 
         assert len(img_files) == 1, f'{idx}: {img_files}'
         assert len(mask_files) == 1, f'{idx}: {mask_files}'
