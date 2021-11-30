@@ -36,3 +36,12 @@ python test.py --checkpoint lightning_logs/version_0/checkpoints/_ckpt_epoch_1.c
 ## Reference
 
 + Implementation is heavily referred from [milesial](https://github.com/milesial/Pytorch-UNet)
+
+
+``` python
+for filename in glob.iglob('./dataset/train_mask/'+'**/**',recursive=True):
+    # tt = filename if ".png" in filename else pass
+    if ".png" in filename:
+        shutil.move(filename,"./dataset/train_mask/")
+
+```

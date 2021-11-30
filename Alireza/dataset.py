@@ -17,8 +17,8 @@ class DirDataset(Dataset):
         self.csv_file = csv_file
 
         try:
-            for root, 
-            self.ids = [s.split('.')[0] for s in os.listdir(self.img_dir)]
+            self.ids = [s.split('.')[0] for s in os.listdir(self.mask_dir)]
+            print(len(self.ids))
         except FileNotFoundError:
             self.ids = []
 
