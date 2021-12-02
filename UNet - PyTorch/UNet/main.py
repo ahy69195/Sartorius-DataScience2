@@ -1,8 +1,7 @@
-import albumentations as A
-import pandas as pd
 from dataset import CellDataset
 from model import UNet
 from utils import *
+import albumentations as A
 
 
 def main():
@@ -36,6 +35,7 @@ def main():
     if load_model:
         model.load_state_dict(torch.load(f'{path}/model/model.pth'))
     else:
+        print('train')
         model = training(path, model, cell_data_train, lr, epochs, batch_size=1, device=device)
 
     # Evaluate the model

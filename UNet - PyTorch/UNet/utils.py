@@ -5,7 +5,7 @@ from torch import optim
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
-from tqdm.notebook import trange, tqdm
+from tqdm import trange, tqdm
 
 # Ref: https://www.kaggle.com/rishabhiitbhu/unet-with-resnet34-encoder-pytorch/notebook
 # All of the loss functions are from this kaggle kernel. It was hugely helpful for training.
@@ -78,9 +78,9 @@ class MixedLoss(nn.Module):
 
 
 # Training and eval functions:
-def training(path, model, dataset, learning_rate, epochs, batch_size=1, num_workers=0, device='cuda'):
+def training(path, model, dataset, learning_rate, epochs, batch_size=1, device='cuda'):
     # Pass the dataset to a DataLoader
-    cell_dl = DataLoader(dataset, batch_size=batch_size, drop_last=True, shuffle=True, num_workers=num_workers)
+    cell_dl = DataLoader(dataset, batch_size=batch_size, drop_last=True, shuffle=True)
     num_batches = len(cell_dl)
     # Init loss and optimizer
     criterion = MixedLoss(10.0, 2.0)
@@ -91,7 +91,11 @@ def training(path, model, dataset, learning_rate, epochs, batch_size=1, num_work
     for epoch in epoch_bar:
         running_loss = 0.0
         optimizer.zero_grad()
-        load_batch = tqdm(cell_dl, desc=f'Batch: {0}/{num_batches} - Progress', leave=False)
+        load_batch = tqdm(cell_dl, desc=f'Batch: {0}/{num_batches} - Progress', leave=True)
+
+        with tqdm(total=len(load_batch), position=0, leave=True) as pbar:
+
+
         for i, batch in enumerate(load_batch):
             # Load and process img and mask
             img_id, images, masks = batch
@@ -105,6 +109,7 @@ def training(path, model, dataset, learning_rate, epochs, batch_size=1, num_work
                 output[:][0:2] = model(images)[0][0]  # Cast Height and Width dims to all 3 output_channels
                 loss = criterion(output, masks)
             load_batch.set_description(f'Batch: {i}/{num_batches} - Loss: {loss.item():.3f} - Progress')
+            load_batch.refresh()
 
             # Backward Pass
             loss.backward()
