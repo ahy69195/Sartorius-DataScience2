@@ -91,11 +91,7 @@ def training(path, model, dataset, learning_rate, epochs, batch_size=1, device='
     for epoch in epoch_bar:
         running_loss = 0.0
         optimizer.zero_grad()
-        load_batch = tqdm(cell_dl, desc=f'Batch: {0}/{num_batches} - Progress', leave=True)
-
-        with tqdm(total=len(load_batch), position=0, leave=True) as pbar:
-
-
+        load_batch = tqdm(cell_dl, desc=f'Batch: {0}/{num_batches} - Progress', leave=False)
         for i, batch in enumerate(load_batch):
             # Load and process img and mask
             img_id, images, masks = batch
